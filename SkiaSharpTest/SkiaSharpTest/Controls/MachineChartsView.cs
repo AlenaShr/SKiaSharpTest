@@ -1,4 +1,5 @@
-﻿using SkiaSharp.Views.Forms;
+﻿using SkiaSharp;
+using SkiaSharp.Views.Forms;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,10 +9,9 @@ namespace SkiaSharpTest.Controls
 {
     public class MachineChartsView : SKCanvasView
     {
+        #region .CTOR
         public MachineChartsView()
         {
-            this.BackgroundColor = Color.Yellow;
-            Container = new Container();
             Sections = new List<Series>
             {
                     new Series
@@ -46,7 +46,23 @@ namespace SkiaSharpTest.Controls
                     }
             };
             this.PaintSurface += OnPaintCanvas;
-            InvalidateSurface();
+        }
+        #endregion
+
+        #region Bindable Properties
+
+        public IEnumerable<object> DataSource
+        {
+            get { return (IEnumerable<object>)GetValue(DataSourceProperty); }
+            set { SetValue(DataSourceProperty, value); }
+        }
+
+        public static readonly BindableProperty DataSourceProperty = BindableProperty.Create(
+            nameof(DataSource), typeof(IEnumerable<object>), typeof(MachineChartsView), default(IEnumerable<object>), propertyChanged: OnDataSourceChanged);
+
+        private static void OnDataSourceChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+           // ((MachineChartsView)bindable).InvalidateSurface();
         }
 
         public Container Container
@@ -56,7 +72,7 @@ namespace SkiaSharpTest.Controls
         }
 
         public static readonly BindableProperty ContainerProperty = BindableProperty.Create(
-            nameof(Container), typeof(Container), typeof(MachineChartsView), null);
+            nameof(Container), typeof(Container), typeof(MachineChartsView), new Container());
 
         public List<Series> Sections
         {
@@ -69,9 +85,12 @@ namespace SkiaSharpTest.Controls
 
         private static void OnSeriesChanged(BindableObject bindable, object oldValue, object newValue)
         {
-            //((MachineChartsView)bindable).InvalidateSurface();
+            ((MachineChartsView)bindable).InvalidateSurface();
         }
 
+        #endregion
+
+        #region Event Handling
         private void OnPaintCanvas(object sender, SKPaintSurfaceEventArgs e)
         {
             if (Sections != null)
@@ -99,5 +118,15 @@ namespace SkiaSharpTest.Controls
                 }
             }
         }
+
+        #endregion
+
+        #region Methods
+        private void DrawChart(SKCanvas sKCanvas, int width, int height)
+        {
+            
+        }
+
+        #endregion
     }
 }

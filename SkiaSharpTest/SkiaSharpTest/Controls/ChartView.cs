@@ -11,13 +11,16 @@ namespace SkiaSharpTest.Controls
 {
     public class ChartView : SKCanvasView
     {
+        #region .CTOR
         public ChartView()
         {
             Series = new Series();
             this.BackgroundColor = Color.Transparent;
             this.PaintSurface += OnPaintCanvas;
         }
+        #endregion
 
+        #region Bindable Properties
         public IEnumerable<object> DataSource
         {
             get { return (IEnumerable<object>)GetValue(DataSourceProperty); }
@@ -54,13 +57,17 @@ namespace SkiaSharpTest.Controls
         {
             ((ChartView)bindable).InvalidateSurface();
         }
+        #endregion
 
-
+        #region Event Handling
         private void OnPaintCanvas(object sender, SKPaintSurfaceEventArgs e)
         {
             DrawChart(e.Surface.Canvas, e.Info.Width, e.Info.Height);
         }
 
+        #endregion
+
+        #region Methods
         private void DrawChart(SKCanvas canvas, int width, int height)
         {
             if (DataSource != default(IEnumerable<object>))
@@ -91,8 +98,10 @@ namespace SkiaSharpTest.Controls
             }
             if (this.Series != null)
             {
-                //this.Series.Draw(canvas, width, height);
+                this.Series.Draw(canvas, width, height);
             }
         }
+
+        #endregion
     }
 }

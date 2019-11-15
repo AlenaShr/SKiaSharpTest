@@ -55,7 +55,7 @@ namespace SkiaSharpTest.Controls
         private float ValueRange => this.MaxValue - this.MinValue;
         public float MarginInner { get; set; } = 10;
         public string FooterLabel { get; set; }
-        public float FooterLabelTextSize { get; set; } = 16.0f;
+        public float FooterLabelTextSize { get; set; } = 20.0f;
         public SKColor ChartColor { get; set; } = SKColors.Green;
         public SKColor ChartAreaColor { get; set; } = SKColors.LightGray;
         public SKColor TextColor { get; set; } = SKColors.Black;
@@ -66,7 +66,7 @@ namespace SkiaSharpTest.Controls
 
         #region Methods
 
-        public void Draw(SKCanvas canvas, int width, int height, float xOffset, float yOffset)
+        public void Draw(SKCanvas canvas, int width, int height, float xOffset = 0, float yOffset = 0)
         {
             this.DrawLayout(canvas, width, height, xOffset, yOffset);
         }

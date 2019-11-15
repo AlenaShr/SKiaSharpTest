@@ -15,7 +15,7 @@ namespace SkiaSharpTest.Controls
         public SKColor BackgroundColorInner { get; set; } = SKColors.White;
         public SKColor TextColor { get; set; } = SKColors.Black;
         public string HeaderLabel { get; set; } = "APPLE";
-        public float HeaderLabelTextSize { get; set; } = 20.0f;
+        public float HeaderLabelTextSize { get; set; } = 24.0f;
         public int InnerWidth { get; set; } = 180;
         public int InnerHeight { get; set; } = 408;
         public int OuterWidth { get; set; }
