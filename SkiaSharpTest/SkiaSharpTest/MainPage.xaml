@@ -10,6 +10,20 @@
 
     <StackLayout>
         <Grid
+            Padding="10"
+            RowSpacing="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource ChartWidth}"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="{OnIdiom Phone={StaticResource ContainerHeightPhone}, Tablet={StaticResource ContainerHeight}}"/>
+            </Grid.RowDefinitions>
+            <controls:MachineChartsView
+                Grid.Column="0"
+                Grid.Row="0"/>
+        </Grid>
+        <!--<Grid
             RowSpacing="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="{StaticResource ChartWidth}"/>
@@ -35,6 +49,6 @@
                 Grid.Row="2"
                 DataSource="{Binding BillAcceptor}"
                 Label="BILL VAL."/>
-        </Grid>
+        </Grid>-->
     </StackLayout>
 </ContentPage>

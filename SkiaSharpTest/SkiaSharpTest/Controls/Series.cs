@@ -53,52 +53,50 @@ namespace SkiaSharpTest.Controls
             set => this._maxValue = value;
         }
         private float ValueRange => this.MaxValue - this.MinValue;
-        public float Margin { get; set; } = 10;
-        public string Label { get; set; }
-        public float LabelTextSize { get; set; } = 16.0f;
+        public float MarginInner { get; set; } = 10;
+        public string FooterLabel { get; set; }
+        public float FooterLabelTextSize { get; set; } = 16.0f;
         public SKColor ChartColor { get; set; } = SKColors.Green;
         public SKColor ChartAreaColor { get; set; } = SKColors.LightGray;
-        public SKColor TextColor { get; set; } = SKColors.Gray;
-        public SKColor BackgroundColor { get; set; } = SKColors.White;
+        public SKColor TextColor { get; set; } = SKColors.Black;
         public DataEntryCollection DataEntries { get; set; }
-        public float HeightItem { get; set; } = Device.Idiom == TargetIdiom.Phone ? 20 : 
-                                                       (Device.RuntimePlatform == Device.Android ? 40 : 45);
         public float WidthItem { get; set; } = Device.Idiom == TargetIdiom.Phone? 10 : 20;
 
         #endregion
 
         #region Methods
 
-        public void Draw(SKCanvas canvas, int width, int height)
+        public void Draw(SKCanvas canvas, int width, int height, float xOffset, float yOffset)
         {
-            canvas.Clear();
-            this.DrawLayout(canvas, width, height);
+            this.DrawLayout(canvas, width, height, xOffset, yOffset);
         }
-        private void DrawLayout(SKCanvas canvas, int width, int height)
+
+        private void DrawLayout(SKCanvas canvas, int width, int height, float xOffset, float yOffset)
         {
+
             var headerHeight = CalculateHeaderHeight();
             var footerHeight = CalculateFooterHeight();
             var itemSize = CalculateItemSize(width, height, footerHeight, headerHeight);
             var origin = CalculateYOrigin(itemSize.Height, headerHeight);
             var points = this.CalculatePoints(itemSize, origin, headerHeight);
-
-            this.DrawGridAreas(canvas, points, itemSize, headerHeight);
-            this.DrawGrids(canvas, points, itemSize, origin, headerHeight);
-            this.DrawFooter(canvas, points, height);
+            
+            this.DrawGridAreas(canvas, points, itemSize, headerHeight, xOffset, yOffset);
+            this.DrawGrids(canvas, points, itemSize, origin, headerHeight, xOffset, yOffset);
+            this.DrawFooter(canvas, height, xOffset, yOffset);
         }
 
         private float CalculateHeaderHeight()
         {
-            var result = this.Margin;
+            var result = this.MarginInner;
             return result;
         }
 
         private float CalculateFooterHeight()
         {
-            var result = this.Margin;
-            if (!string.IsNullOrEmpty(Label))
+            var result = this.MarginInner;
+            if (!string.IsNullOrEmpty(FooterLabel))
             {
-                result += this.LabelTextSize + this.Margin;
+                result += this.FooterLabelTextSize + this.MarginInner;
             }
 
             return result;
@@ -108,7 +106,7 @@ namespace SkiaSharpTest.Controls
         {
             var total = this.DataEntries.Count();
             var w = WidthItem; //(width - ((total + 1) * this.Margin)) / total;
-            var h = height - this.Margin - footerHeight - headerHeight;
+            var h = height - this.MarginInner - footerHeight - headerHeight;
             return new SKSize(w, h);
         }
 
@@ -125,7 +123,7 @@ namespace SkiaSharpTest.Controls
             {
                 var entry = this.DataEntries.ElementAt(i);
 
-                var x = this.Margin + (itemSize.Width / 2) + (i * (itemSize.Width + this.Margin));
+                var x = this.MarginInner + (itemSize.Width / 2) + (i * (itemSize.Width + this.MarginInner));
                 var y = headerHeight + (((this.MaxValue - entry.Value) / this.ValueRange) * itemSize.Height);
                 var point = new SKPoint(x, y);
                 result.Add(point);
@@ -134,7 +132,7 @@ namespace SkiaSharpTest.Controls
             return result.ToArray();
         }
 
-        private void DrawGridAreas(SKCanvas canvas, SKPoint[] points, SKSize itemSize, float headerHeight)
+        private void DrawGridAreas(SKCanvas canvas, SKPoint[] points, SKSize itemSize, float headerHeight, float xOffset, float yOffset)
         {
             if (points.Length > 0 )
             {
@@ -152,14 +150,14 @@ namespace SkiaSharpTest.Controls
                         var max = headerHeight; //entry.Value > 0 ? headerHeight : headerHeight + itemSize.Height;
                         var height = Math.Abs(max - point.Y);
                         var y = Math.Min(max, point.Y);
-                        var rect = SKRect.Create(point.X - (itemSize.Width / 2), y, itemSize.Width, height);
+                        var rect = SKRect.Create(point.X - (itemSize.Width / 2) + xOffset, y + yOffset, itemSize.Width, height);
                         canvas.DrawRoundRect(new SKRoundRect(rect,4,4), paint);
                     }
                 }
             }
         }
 
-        private void DrawGrids(SKCanvas canvas, SKPoint[] points, SKSize itemSize, float origin, float headerHeight)
+        private void DrawGrids(SKCanvas canvas, SKPoint[] points, SKSize itemSize, float origin, float headerHeight, float xOffset, float yOffset)
         {
             const float MinBarHeight = 1;
             if (points.Length > 0)
@@ -184,7 +182,7 @@ namespace SkiaSharpTest.Controls
                             if (height < MinBarHeight)
                             {
                                 height = MinBarHeight;
-                                if (y + height > this.Margin + itemSize.Height)
+                                if (y + height > this.MarginInner + itemSize.Height)
                                 {
                                     y = headerHeight + itemSize.Height - height;
                                 }
@@ -195,37 +193,35 @@ namespace SkiaSharpTest.Controls
                             height = Math.Abs(origin - point.Y);
                         }
                         
-                        var rect = SKRect.Create(x, y, itemSize.Width, height);
+                        var rect = SKRect.Create(x + xOffset, y + yOffset, itemSize.Width, height);
                         canvas.DrawRect(rect, paint);
                     }
                 }
             }
         }
 
-        private void DrawFooter(SKCanvas canvas, SKPoint[] points, int height)
+        private void DrawFooter(SKCanvas canvas, int height, float xOffset, float yOffset)
         {
-            this.DrawLabel(canvas, points, height);
+            this.DrawLabel(canvas, height, xOffset, yOffset);
         }
 
-        private void DrawLabel(SKCanvas canvas, SKPoint[] points, int height)
+        private void DrawLabel(SKCanvas canvas, int height, float xOffset, float yOffset)
         {
-            var point = points[0];
-
-            if (!string.IsNullOrEmpty(Label))
+            if (!string.IsNullOrEmpty(FooterLabel))
             {
                 using (var paint = new SKPaint())
                 {
-                    paint.TextSize = this.LabelTextSize;
+                    paint.TextSize = this.FooterLabelTextSize;
                     paint.IsAntialias = true;
                     paint.Color = TextColor;
                     paint.IsStroke = false;
 
                     var bounds = new SKRect();
-                    var text = Label;
+                    var text = FooterLabel;
                     paint.MeasureText(text, ref bounds);
 
                     
-                    canvas.DrawText(text, this.Margin, height - (this.Margin + (this.LabelTextSize / 2)), paint);
+                    canvas.DrawText(text, this.MarginInner + xOffset, height - (this.MarginInner + (this.FooterLabelTextSize / 2)) + yOffset, paint);
                 }
             }
         }

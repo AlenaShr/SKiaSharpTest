@@ -87,11 +87,11 @@ namespace SkiaSharpTest.Controls
                     float.TryParse(properties.ElementAt(1).GetValue(val, null).ToString(), out yValue);
                     Series.DataEntries.Add(new DataEntry(xValue, yValue));
                 }
-                Series.Label = Label;
+                Series.FooterLabel = Label;
             }
             if (this.Series != null)
             {
-                this.Series.Draw(canvas, width, height);
+                //this.Series.Draw(canvas, width, height);
             }
         }
     }
