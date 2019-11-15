@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="SkiaSharpTest.App">
+    <Application.Resources>
+        <OnPlatform x:TypeArguments="GridLength" x:Key="ChartHeight">
+            <On Platform="Android">68</On>
+            <On Platform="iOS">73</On>
+        </OnPlatform>
+
+        <OnPlatform x:TypeArguments="GridLength" x:Key="ChartHeightPhone">
+            <On Platform="Android">88</On>
+            <On Platform="iOS">98</On>
+        </OnPlatform>
+
+        <OnIdiom x:Key="InnerWidthAndroid" x:TypeArguments="GridLength" Phone="40" Tablet="80"/>
+        <OnIdiom x:Key="InnerWidthIos" x:TypeArguments="GridLength" Phone="50" Tablet="90"/>
+
+        <OnPlatform x:Key="ChartWidth" x:TypeArguments="GridLength" Android="{StaticResource InnerWidthAndroid}" iOS="{StaticResource InnerWidthIos}"/>
+    </Application.Resources>
+</Application>
