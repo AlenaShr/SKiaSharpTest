@@ -20,6 +20,7 @@
                 <RowDefinition Height="{OnIdiom Phone={StaticResource ContainerHeightPhone}, Tablet={StaticResource ContainerHeight}}"/>
             </Grid.RowDefinitions>
             <controls:MachineChartsView
+                DataSource="{Binding MachineChart}"
                 Grid.Column="0"
                 Grid.Row="0"/>
         </Grid>

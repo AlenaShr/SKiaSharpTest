@@ -64,6 +64,19 @@ namespace SkiaSharpTest.Controls
 
         #endregion
 
+        #region .CTOR
+        public Series()
+        {
+            
+        }
+
+        public Series(DataEntryCollection dataEntries, string label)
+        {
+            DataEntries = dataEntries;
+            FooterLabel = label;
+        }
+        #endregion
+
         #region Methods
 
         public void Draw(SKCanvas canvas, int width, int height, float xOffset = 0, float yOffset = 0)

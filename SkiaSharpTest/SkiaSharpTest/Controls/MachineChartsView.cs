@@ -2,6 +2,8 @@
 using SkiaSharp.Views.Forms;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using Xamarin.Forms;
 
@@ -12,39 +14,6 @@ namespace SkiaSharpTest.Controls
         #region .CTOR
         public MachineChartsView()
         {
-            Sections = new List<Series>
-            {
-                    new Series
-                    {
-                        DataEntries = new DataEntryCollection
-                        {
-                           new DataEntry(0,2250),
-                           new DataEntry(1940,2250),
-                           new DataEntry(1980,2250),
-                           new DataEntry(1905,2250),
-                           new DataEntry(1999,2250),
-                        },
-                        FooterLabel = "CASH DIS."
-                    },
-                    new Series
-                    {
-                        DataEntries = new DataEntryCollection
-                        {
-                           new DataEntry(1,2250),
-                           new DataEntry(1800,2250),
-                           new DataEntry(1979,2250)
-                        },
-                        FooterLabel = "COINS DIS."
-                    },
-                    new Series
-                    {
-                        DataEntries = new DataEntryCollection
-                        {
-                           new DataEntry(2,990)
-                        },
-                        FooterLabel = "BILL VAL."
-                    }
-            };
             this.PaintSurface += OnPaintCanvas;
         }
         #endregion
@@ -62,7 +31,7 @@ namespace SkiaSharpTest.Controls
 
         private static void OnDataSourceChanged(BindableObject bindable, object oldValue, object newValue)
         {
-           // ((MachineChartsView)bindable).InvalidateSurface();
+           ((MachineChartsView)bindable).InvalidateSurface();
         }
 
         public Container Container
@@ -85,7 +54,6 @@ namespace SkiaSharpTest.Controls
 
         private static void OnSeriesChanged(BindableObject bindable, object oldValue, object newValue)
         {
-            ((MachineChartsView)bindable).InvalidateSurface();
         }
 
         #endregion
@@ -93,30 +61,9 @@ namespace SkiaSharpTest.Controls
         #region Event Handling
         private void OnPaintCanvas(object sender, SKPaintSurfaceEventArgs e)
         {
-            if (Sections != null)
-            {
-                e.Surface.Canvas.Clear();
+            e.Surface.Canvas.Clear();
+            DrawChart(e.Surface.Canvas, e.Info.Width, e.Info.Height);
 
-                float xOffset = 0;
-                float yOffset = 0;
-                if (Container != null)
-                {
-                    
-                    Container.Draw(e.Surface.Canvas, e.Info.Width, e.Info.Height);
-                    xOffset = Container.MarginLeftRightOuter;
-                    yOffset = Container.HeaderHeight;
-
-                    int height = Container.InnerHeight / Sections.Count;
-                    int width = Container.InnerWidth;
-
-
-                    foreach (var section in Sections)
-                    {
-                        section.Draw(e.Surface.Canvas, width, height, xOffset, yOffset);
-                        yOffset += height;
-                    }
-                }
-            }
         }
 
         #endregion
@@ -124,7 +71,61 @@ namespace SkiaSharpTest.Controls
         #region Methods
         private void DrawChart(SKCanvas sKCanvas, int width, int height)
         {
-            
+            if (DataSource != default(IEnumerable<object>))
+            {
+                if (Sections == null)
+                {
+                    Sections = new List<Series>();
+                }
+                if (Sections.Count > 0)
+                {
+                    Sections.Clear();
+                }
+                Type type = DataSource.ElementAt(0).GetType();
+                IEnumerable<PropertyInfo> properties = type.GetTypeInfo().DeclaredProperties;
+                foreach (var val in DataSource)
+                {
+                    IEnumerable<object> xValue;
+                    string yValue;
+                    xValue = properties.ElementAt(0).GetValue(val, null) as IEnumerable<object>;                   
+
+                    DataEntryCollection entries = new DataEntryCollection();
+                    foreach (var nested in xValue)
+                    {
+                        Type type2 = nested.GetType();
+                        IEnumerable<PropertyInfo> properties2 = type2.GetTypeInfo().DeclaredProperties;
+                        float xValue2, yValue2;
+                        float.TryParse(properties2.ElementAt(0).GetValue(nested, null).ToString(), out xValue2);
+                        float.TryParse(properties2.ElementAt(1).GetValue(nested, null).ToString(), out yValue2);
+                        entries.Add(new DataEntry(xValue2, yValue2));
+                    }
+                    yValue = properties.ElementAt(1).GetValue(val, null).ToString();
+
+                    Sections.Add(new Series(entries, yValue));
+                }
+            }
+            if (Sections != null)
+            {
+                float xOffset = 0;
+                float yOffset = 0;
+                if (Container != null)
+                {
+
+                    Container.Draw(sKCanvas, width, height);
+                    xOffset = Container.MarginLeftRightOuter;
+                    yOffset = Container.HeaderHeight;
+
+                    int iHeight = Container.InnerHeight / Sections.Count;
+                    int iWidth = Container.InnerWidth;
+
+
+                    foreach (var section in Sections)
+                    {
+                        section.Draw(sKCanvas, iWidth, iHeight, xOffset, yOffset);
+                        yOffset += iHeight;
+                    }
+                }
+            }
         }
 
         #endregion
