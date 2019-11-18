@@ -57,7 +57,7 @@ namespace SkiaSharpTest.Controls
             })
             {
                 var rect = SKRect.Create(0, 0, width, height);
-                canvas.DrawRoundRect(new SKRoundRect(rect, 4, 4), paint);
+                canvas.DrawRoundRect(new SKRoundRect(rect, 8, 8), paint);
             }
         }
 

@@ -68,7 +68,6 @@ namespace SkiaSharpTest.Controls
         #region .CTOR
         public Series()
         {
-            
         }
 
         public Series(DataEntryCollection dataEntries, string label)
