@@ -84,7 +84,7 @@ namespace SkiaSharpTest
                 (
                     new List<Tuple<float, float>>
                     {
-                        new Tuple<float, float>(1,2250),
+                        new Tuple<float, float>(2,2250),
                         new Tuple<float, float>(1800,2250),
                         new Tuple<float, float>(1979,2250),
                     },

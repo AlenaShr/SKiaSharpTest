@@ -54,6 +54,7 @@ namespace SkiaSharpTest.Controls
         }
         private float ValueRange => this.MaxValue - this.MinValue;
         public float MarginInner { get; set; } = 10;
+        public float MarginLabel { get; set; } = 5;
         public string FooterLabel { get; set; }
         public float FooterLabelTextSize { get; set; } = 20.0f;
         public SKColor ChartColor { get; set; } = SKColors.Green;
@@ -109,7 +110,7 @@ namespace SkiaSharpTest.Controls
             var result = this.MarginInner;
             if (!string.IsNullOrEmpty(FooterLabel))
             {
-                result += this.FooterLabelTextSize + this.MarginInner;
+                result += this.FooterLabelTextSize + this.MarginLabel;
             }
 
             return result;
@@ -164,7 +165,7 @@ namespace SkiaSharpTest.Controls
                         var height = Math.Abs(max - point.Y);
                         var y = Math.Min(max, point.Y);
                         var rect = SKRect.Create(point.X - (itemSize.Width / 2) + xOffset, y + yOffset, itemSize.Width, height);
-                        canvas.DrawRoundRect(new SKRoundRect(rect,4,4), paint);
+                        canvas.DrawRoundRect(new SKRoundRect(rect, 4, 4), paint);
                     }
                 }
             }
@@ -234,7 +235,7 @@ namespace SkiaSharpTest.Controls
                     paint.MeasureText(text, ref bounds);
 
                     
-                    canvas.DrawText(text, this.MarginInner + xOffset, height - (this.MarginInner + (this.FooterLabelTextSize / 2)) + yOffset, paint);
+                    canvas.DrawText(text, this.MarginInner + xOffset, height - (this.MarginInner + (this.FooterLabelTextSize / 2)) + this.MarginLabel + yOffset, paint);
                 }
             }
         }

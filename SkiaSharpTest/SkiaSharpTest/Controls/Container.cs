@@ -17,7 +17,7 @@ namespace SkiaSharpTest.Controls
         public string HeaderLabel { get; set; } = "APPLE";
         public float HeaderLabelTextSize { get; set; } = 24.0f;
         public int InnerWidth { get; set; } = 180;
-        public int InnerHeight { get; set; } = 408;
+        public int InnerHeight { get; set; } = 395;
         public int OuterWidth { get; set; }
         public float HeaderHeight { get; set; }
         #endregion
