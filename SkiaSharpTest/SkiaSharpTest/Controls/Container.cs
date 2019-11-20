@@ -10,14 +10,14 @@ namespace SkiaSharpTest.Controls
     {
         #region Properties
         public float MarginTopBottomOuter { get; set; } = 25;
-        public float MarginLeftRightOuter { get; set; } = 10;
+        public float MarginLeftRightOuter { get; set; } = Device.Idiom == TargetIdiom.Tablet ? 10 : 15;
         public SKColor BackgroundColorOuter { get; set; } = SKColors.LightGray;
         public SKColor BackgroundColorInner { get; set; } = SKColors.White;
         public SKColor TextColor { get; set; } = SKColors.Black;
         public string HeaderLabel { get; set; } = "APPLE";
         public float HeaderLabelTextSize { get; set; } = 24.0f;
-        public int InnerWidth { get; set; } = 180;
-        public int InnerHeight { get; set; } = 395;
+        public int InnerWidth { get; set; } = Device.Idiom == TargetIdiom.Tablet ? 180 : 150;
+        public int InnerHeight { get; set; } = Device.Idiom == TargetIdiom.Tablet ? 395 : 375;
         public int OuterWidth { get; set; }
         public float HeaderHeight { get; set; }
         #endregion

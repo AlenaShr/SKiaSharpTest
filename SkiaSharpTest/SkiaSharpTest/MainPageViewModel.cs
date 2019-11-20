@@ -16,8 +16,8 @@ namespace SkiaSharpTest
         }
 
         #region Properties
-        private List<Tuple<List<Tuple<float, float>>, string>> _machineChart;
-        public List<Tuple<List<Tuple<float, float>>, string>> MachineChart
+        private Tuple<List<Tuple<List<Tuple<float, float>>, string>>,string,string> _machineChart;
+        public Tuple<List<Tuple<List<Tuple<float, float>>, string>>, string, string> MachineChart
         {
             get { return _machineChart; }
             set 
@@ -64,9 +64,10 @@ namespace SkiaSharpTest
         #endregion
 
         #region Methods
-        private List<Tuple<List<Tuple<float, float>>, string>> GetChart()
+        private Tuple<List<Tuple<List<Tuple<float, float>>, string>>,string,string> GetChart()
         {
-            return new List<Tuple<List<Tuple<float, float>>, string>>
+            return new Tuple<List<Tuple<List<Tuple<float, float>>, string>>, string, string>( 
+                new List<Tuple<List<Tuple<float, float>>, string>>
             {
                 new Tuple<List<Tuple<float, float>>, string>
                 (
@@ -98,7 +99,9 @@ namespace SkiaSharpTest
                     },
                     "BILL VAL."
                 )
-            };
+            },
+                "Second",
+                "Third");
         }
 
 

@@ -20,14 +20,14 @@ namespace SkiaSharpTest.Controls
 
         #region Bindable Properties
 
-        public IEnumerable<object> DataSource
+        public Tuple<List<Tuple<List<Tuple<float, float>>, string>>, string, string> DataSource
         {
-            get { return (IEnumerable<object>)GetValue(DataSourceProperty); }
+            get { return (Tuple<List<Tuple<List<Tuple<float, float>>, string>>, string, string>)GetValue(DataSourceProperty); }
             set { SetValue(DataSourceProperty, value); }
         }
 
         public static readonly BindableProperty DataSourceProperty = BindableProperty.Create(
-            nameof(DataSource), typeof(IEnumerable<object>), typeof(MachineChartsView), default(IEnumerable<object>), propertyChanged: OnDataSourceChanged);
+            nameof(DataSource), typeof(Tuple<List<Tuple<List<Tuple<float, float>>, string>>, string, string>), typeof(MachineChartsView), default(Tuple<IEnumerable<object>, string, string>), propertyChanged: OnDataSourceChanged);
 
         private static void OnDataSourceChanged(BindableObject bindable, object oldValue, object newValue)
         {
@@ -71,7 +71,7 @@ namespace SkiaSharpTest.Controls
         #region Methods
         private void DrawChart(SKCanvas sKCanvas, int width, int height)
         {
-            if (DataSource != default(IEnumerable<object>))
+            if (DataSource != default(Tuple<List<Tuple<List<Tuple<float, float>>, string>>, string, string>))
             {
                 if (Sections == null)
                 {
@@ -81,9 +81,15 @@ namespace SkiaSharpTest.Controls
                 {
                     Sections.Clear();
                 }
-                Type type = DataSource.ElementAt(0).GetType();
+                Type dataSourceType = DataSource.GetType();
+                IEnumerable<PropertyInfo> dataSourceProperties = dataSourceType.GetTypeInfo().DeclaredProperties;
+                IEnumerable<object> entities = dataSourceProperties.ElementAt(0).GetValue(DataSource, null) as IEnumerable<object>;
+                string second = dataSourceProperties.ElementAt(1).GetValue(DataSource, null).ToString();
+                string third = dataSourceProperties.ElementAt(2).GetValue(DataSource, null).ToString();
+
+                Type type = entities.ElementAt(0).GetType();
                 IEnumerable<PropertyInfo> properties = type.GetTypeInfo().DeclaredProperties;
-                foreach (var val in DataSource)
+                foreach (var val in entities)
                 {
                     IEnumerable<object> xValue;
                     string yValue;

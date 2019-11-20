@@ -61,7 +61,7 @@ namespace SkiaSharpTest.Controls
         public SKColor ChartAreaColor { get; set; } = SKColors.LightGray;
         public SKColor TextColor { get; set; } = SKColors.Black;
         public DataEntryCollection DataEntries { get; set; }
-        public float WidthItem { get; set; } = Device.Idiom == TargetIdiom.Phone? 10 : 20;
+        public float WidthItem { get; set; } = Device.Idiom == TargetIdiom.Tablet ? 20 : 18;
 
         #endregion
 
