@@ -23,7 +23,7 @@
 
         <OnPlatform x:TypeArguments="GridLength" x:Key="ContainerHeightPhone">
             <On Platform="Android">156</On>
-            <On Platform="iOS">156</On>
+            <On Platform="iOS">163</On>
         </OnPlatform>
         
         <OnIdiom x:Key="InnerWidthAndroid" x:TypeArguments="GridLength" Phone="59" Tablet="100"/>

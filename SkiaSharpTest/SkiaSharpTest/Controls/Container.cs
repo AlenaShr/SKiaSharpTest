@@ -9,38 +9,43 @@ namespace SkiaSharpTest.Controls
     public class Container
     {
         #region Properties
-        public float MarginTopBottomOuter { get; set; } = 25;
-        public float MarginLeftRightOuter { get; set; } = Device.Idiom == TargetIdiom.Tablet ? 10 : 15;
-        public SKColor BackgroundColorOuter { get; set; } = SKColors.LightGray;
-        public SKColor BackgroundColorInner { get; set; } = SKColors.White;
-        public SKColor TextColor { get; set; } = SKColors.Black;
-        public string HeaderLabel { get; set; } = "APPLE";
-        public float HeaderLabelTextSize { get; set; } = 24.0f;
-        public int InnerWidth { get; set; } = Device.Idiom == TargetIdiom.Tablet ? 180 : 150;
-        public int InnerHeight { get; set; } = Device.Idiom == TargetIdiom.Tablet ? 395 : 375;
+        public float MarginTopBottomOuter  => 25 * (float)KScale;
+        public float PaddingBottomOuter =>  20 * (float)KScale;
+        public float MarginLeftRightOuter => Device.Idiom == TargetIdiom.Tablet ? 10 * (float)KScale : 15 * (float)KScale;
+        public SKColor BackgroundColorOuter => SKColors.LightGray;
+        public SKColor BackgroundColorInner => SKColors.White;
+        public SKColor TextColor => SKColors.Black;
+        public string HeaderLabel => "APPLE";
+        public float HeaderLabelTextSize => 24.0f * (float)KScale;
+        public int InnerWidth { get; set; } 
+        public int InnerHeight { get; set; } 
         public int OuterWidth { get; set; }
         public float HeaderHeight { get; set; }
+        public double KScale { get; set; } = 1;
         #endregion
 
         #region Methods
-        public void Draw(SKCanvas canvas, int width, int height)
+        public void Draw(SKCanvas canvas, int width, int height, double kScale, SKColor color, string label)
         {
-            this.DrawLayout(canvas, width, height);
+            KScale = kScale;
+            this.DrawLayout(canvas, width, height, color, label);
         }
 
-        private void DrawLayout(SKCanvas canvas, int width, int height)
+        private void DrawLayout(SKCanvas canvas, int width, int height, SKColor color, string label)
         {
             OuterWidth = width;
-            HeaderHeight = CalculateHeaderHeight();
-            this.DrawOuterGrid(canvas, width, height);
-            this.DrawLabel(canvas);
+            HeaderHeight = CalculateHeaderHeight(label);
+            InnerWidth = width - (int)(2 * MarginLeftRightOuter);
+            InnerHeight = height - (int)(HeaderHeight + PaddingBottomOuter);
+            this.DrawOuterGrid(canvas, width, height, color);
+            this.DrawLabel(canvas, label);
             this.DrawInnerGrid(canvas);
         }
 
-        private float CalculateHeaderHeight()
+        private float CalculateHeaderHeight(string label)
         {
             var result = this.MarginTopBottomOuter;
-            if (!string.IsNullOrEmpty(HeaderLabel))
+            if (!string.IsNullOrEmpty(label))
             {
                 result += this.HeaderLabelTextSize + this.MarginTopBottomOuter;
             }
@@ -48,12 +53,12 @@ namespace SkiaSharpTest.Controls
             return result;
         }
 
-        private void DrawOuterGrid(SKCanvas canvas, float width, float height)
+        private void DrawOuterGrid(SKCanvas canvas, float width, float height, SKColor color)
         {
             using (var paint = new SKPaint
             {
                 Style = SKPaintStyle.Fill,
-                Color = BackgroundColorOuter
+                Color = color
             })
             {
                 var rect = SKRect.Create(0, 0, width, height);
@@ -74,9 +79,9 @@ namespace SkiaSharpTest.Controls
             }
         }
 
-        private void DrawLabel(SKCanvas canvas)
+        private void DrawLabel(SKCanvas canvas, string label)
         {
-            if (!string.IsNullOrEmpty(HeaderLabel))
+            if (!string.IsNullOrEmpty(label))
             {
                 using (var paint = new SKPaint())
                 {
@@ -84,9 +89,11 @@ namespace SkiaSharpTest.Controls
                     paint.IsAntialias = true;
                     paint.Color = TextColor;
                     paint.IsStroke = false;
-
+                    paint.Typeface = Xamarin.Forms.Device.RuntimePlatform == Xamarin.Forms.Device.Android ?
+                        SKTypeface.FromFile("KlavikaCHLightCond.otf")
+                        : SKTypeface.FromFile("KlavikaCHLightCond.otf");
                     var bounds = new SKRect();
-                    var text = HeaderLabel;
+                    var text = label;
                     paint.MeasureText(text, ref bounds);
 
                     canvas.DrawText(text, (this.OuterWidth - bounds.Width) / 2, this.HeaderHeight / 2 + this.HeaderLabelTextSize / 2, paint);

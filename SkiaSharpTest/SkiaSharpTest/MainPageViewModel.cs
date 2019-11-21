@@ -1,7 +1,9 @@
-﻿using System;
+﻿using CHBackOffice.ApiServices.ChsProxy;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using Xamarin.Forms;
 
 namespace SkiaSharpTest
 {
@@ -16,29 +18,20 @@ namespace SkiaSharpTest
         }
 
         #region Properties
-        private Tuple<List<Tuple<List<Tuple<float, float>>, string>>,string,string> _machineChart;
-        public Tuple<List<Tuple<List<Tuple<float, float>>, string>>, string, string> MachineChart
-        {
-            get { return _machineChart; }
-            set 
-            {
-                _machineChart = value;
-                OnPropertyChanged(nameof(MachineChart));
-            }
-        }
 
-
+        #region CashDispenser
         private List<Tuple<float, float>> _cashDispenser;
         public List<Tuple<float, float>> CashDispenser
         {
             get { return _cashDispenser; }
-            set 
+            set
             {
                 _cashDispenser = value;
                 OnPropertyChanged(nameof(CashDispenser));
             }
         }
-
+        #endregion
+        #region CoinHopper
         private List<Tuple<float, float>> _coinHopper;
         public List<Tuple<float, float>> CoinHopper
         {
@@ -49,7 +42,8 @@ namespace SkiaSharpTest
                 OnPropertyChanged(nameof(CoinHopper));
             }
         }
-
+        #endregion
+        #region BillAcceptor
         private List<Tuple<float, float>> _billAcceptor;
         public List<Tuple<float, float>> BillAcceptor
         {
@@ -60,48 +54,61 @@ namespace SkiaSharpTest
                 OnPropertyChanged(nameof(BillAcceptor));
             }
         }
+        #endregion
+
+        private Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string> _machineChart;
+        public Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string> MachineChart
+        {
+            get { return _machineChart; }
+            set 
+            {
+                _machineChart = value;
+                OnPropertyChanged(nameof(MachineChart));
+            }
+        }
 
         #endregion
 
         #region Methods
-        private Tuple<List<Tuple<List<Tuple<float, float>>, string>>,string,string> GetChart()
+        private Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string> GetChart()
         {
-            return new Tuple<List<Tuple<List<Tuple<float, float>>, string>>, string, string>( 
-                new List<Tuple<List<Tuple<float, float>>, string>>
+            return new Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string>(
+                new List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>
             {
-                new Tuple<List<Tuple<float, float>>, string>
+                new Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>
                 (
-                    new List<Tuple<float, float>>
+                    new List<Tuple<float, float, Func<float, float, Color>>>
                     {
-                        new Tuple<float, float>(0,2250),
-                        new Tuple<float, float>(1940,2250),
-                        new Tuple<float, float>(1980,2250),
-                        new Tuple<float, float>(1905,2250),
-                        new Tuple<float, float>(1999,2250),
+                        new Tuple<float, float, Func<float, float,Color>>(0, 2250, CashCoinColorFunc),
+                        new Tuple<float, float, Func<float, float,Color>>(1940, 2250, CashCoinColorFunc),
+                        new Tuple<float, float, Func<float, float,Color>>(1980, 2250, CashCoinColorFunc),
+                        new Tuple<float, float, Func<float, float,Color>>(1905, 2250, CashCoinColorFunc),
+                        new Tuple<float, float, Func<float, float,Color>>(1999, 2250, CashCoinColorFunc),
                     },
                     "CASH DIS."
                 ),
-                new Tuple<List<Tuple<float, float>>, string>
+                new Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>
                 (
-                    new List<Tuple<float, float>>
+                    new List<Tuple<float, float, Func<float, float, Color>>>
                     {
-                        new Tuple<float, float>(2,2250),
-                        new Tuple<float, float>(1800,2250),
-                        new Tuple<float, float>(1979,2250),
+                        new Tuple<float, float, Func<float, float,Color>>(2, 2250, CashCoinColorFunc),
+                        new Tuple<float, float, Func<float, float,Color>>(1800, 2250, CashCoinColorFunc),
+                        new Tuple<float, float, Func<float, float,Color>>(1979, 2250, CashCoinColorFunc),
                     },
                     "COINS DIS."
                 ),
-                new Tuple<List<Tuple<float, float>>, string>
+                new Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>
                 (
-                    new List<Tuple<float, float>>
+                    new List<Tuple<float, float, Func<float, float, Color>>>
                     {
-                        new Tuple<float, float>(2,990),
+                        new Tuple<float, float, Func<float, float,Color>>(2, 990, BillColorFunc),
                     },
                     "BILL VAL."
                 )
             },
-                "Second",
-                "Third");
+                KioskState.Offline,
+                KioskStatus.Normal,
+                "APPLE");
         }
 
 
@@ -131,6 +138,45 @@ namespace SkiaSharpTest
                 },
             };
         }
+
+
+        private Func<float, float, Color> CashCoinColorFunc = (count, capacity) =>
+        {
+            if (count >= 100)
+            {
+                return Color.FromHex("#65a77b");
+            }
+            else if (count > 0 && count < 100)
+            {
+                return Color.FromHex("#F7E076");
+            }
+            else if (count == 0)
+            {
+                return Color.FromHex("#EA6964");
+            }
+            return Color.LightGray;
+        };
+
+        private Func<float, float, Color> BillColorFunc = (count, capacity) =>
+        {
+            if (count < (capacity - 100))
+            {
+                return Color.FromHex("#65a77b");
+            }
+            else if (count >= (capacity - 100))
+            {
+                return Color.FromHex("#F7E076");
+            }
+            else if (count == capacity)
+            {
+                return Color.FromHex("#EA6964");
+            }
+            else if (count == 0)
+            {
+                return Color.FromHex("#F1F0F3");
+            }
+            return Color.LightGray;
+        };
 
         #endregion
 

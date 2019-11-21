@@ -53,16 +53,17 @@ namespace SkiaSharpTest.Controls
             set => this._maxValue = value;
         }
         private float ValueRange => this.MaxValue - this.MinValue;
-        public float MarginInner { get; set; } = 10;
-        public float MarginLabel { get; set; } = 5;
+        public float MarginInner => 10 * (float)KScale;
+        public float MarginLabel => 5 * (float)KScale;
+        public float FooterLabelTextSize => 20.0f *(float)KScale;
+        public float WidthItem => Device.Idiom == TargetIdiom.Tablet ? 20 * (float)KScale : 18 * (float)KScale;
         public string FooterLabel { get; set; }
-        public float FooterLabelTextSize { get; set; } = 20.0f;
-        public SKColor ChartColor { get; set; } = SKColors.Green;
+        public SKColor CriticalColor { get; set; } = SKColors.Red;
         public SKColor ChartAreaColor { get; set; } = SKColors.LightGray;
-        public SKColor TextColor { get; set; } = SKColors.Black;
+        public SKColor TextColor => SKColors.Black;
         public DataEntryCollection DataEntries { get; set; }
-        public float WidthItem { get; set; } = Device.Idiom == TargetIdiom.Tablet ? 20 : 18;
-
+        
+        public double KScale { get; set; } = 1;
         #endregion
 
         #region .CTOR
@@ -79,8 +80,9 @@ namespace SkiaSharpTest.Controls
 
         #region Methods
 
-        public void Draw(SKCanvas canvas, int width, int height, float xOffset = 0, float yOffset = 0)
+        public void Draw(SKCanvas canvas, int width, int height, double kScale,float xOffset = 0, float yOffset = 0)
         {
+            KScale = kScale;
             this.DrawLayout(canvas, width, height, xOffset, yOffset);
         }
 
@@ -137,7 +139,12 @@ namespace SkiaSharpTest.Controls
                 var entry = this.DataEntries.ElementAt(i);
 
                 var x = this.MarginInner + (itemSize.Width / 2) + (i * (itemSize.Width + this.MarginInner));
-                var y = headerHeight + (((this.MaxValue - entry.Value) / this.ValueRange) * itemSize.Height);
+                var percent = ((this.MaxValue - entry.Value) / this.ValueRange);
+
+                ///Because if count == 0  we can not display setted color indicator
+                if (entry.Value == 0)
+                    percent = 1;
+                var y = headerHeight + (percent * itemSize.Height);
                 var point = new SKPoint(x, y);
                 result.Add(point);
             }
@@ -183,12 +190,12 @@ namespace SkiaSharpTest.Controls
                     using (var paint = new SKPaint
                     {
                         Style = SKPaintStyle.Fill,
-                        Color = ChartColor,
+                        Color = entry.Color,
                     })
                     {
                         var x = point.X - (itemSize.Width / 2);
                         var y = Math.Min(origin, point.Y);
-                        float height;
+                        float height = 0;
                         if (DataEntries[i].Value > 0)
                         {
                             height = Math.Max(MinBarHeight, Math.Abs(origin - point.Y));
@@ -203,7 +210,18 @@ namespace SkiaSharpTest.Controls
                         }
                         else
                         {
-                            height = Math.Abs(origin - point.Y);
+                            if (DataEntries[i].Color == CriticalColor)
+                            {
+                                height = Math.Max(origin, point.Y) - headerHeight;
+                                if (y + height > this.MarginInner + itemSize.Height)
+                                {
+                                    y = headerHeight + itemSize.Height - height;
+                                }
+                            }
+                            else
+                            {
+                                height = Math.Abs(origin - point.Y);
+                            }
                         }
                         
                         var rect = SKRect.Create(x + xOffset, y + yOffset, itemSize.Width, height);
@@ -228,7 +246,9 @@ namespace SkiaSharpTest.Controls
                     paint.IsAntialias = true;
                     paint.Color = TextColor;
                     paint.IsStroke = false;
-
+                    paint.Typeface = Xamarin.Forms.Device.RuntimePlatform == Xamarin.Forms.Device.Android ?
+                        SKTypeface.FromFile("KlavikaCHLightCond.otf")
+                        : SKTypeface.FromFile("KlavikaCHLightCond.otf");
                     var bounds = new SKRect();
                     var text = FooterLabel;
                     paint.MeasureText(text, ref bounds);

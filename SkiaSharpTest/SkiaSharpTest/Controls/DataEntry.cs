@@ -12,10 +12,11 @@ namespace SkiaSharpTest.Controls
         { 
         }
 
-        public DataEntry(float value, float capacity)
+        public DataEntry(float value, float capacity, SKColor color)
         {
             Value = value;
             Capacity = capacity;
+            Color = color;
         }
         #endregion
 
@@ -24,6 +25,8 @@ namespace SkiaSharpTest.Controls
         public float Value { get; set; }
 
         public float Capacity { get; set; }
+
+        public SKColor Color { get; set; }
 
         #endregion
     }

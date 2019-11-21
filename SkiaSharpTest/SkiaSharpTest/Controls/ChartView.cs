@@ -62,13 +62,15 @@ namespace SkiaSharpTest.Controls
         #region Event Handling
         private void OnPaintCanvas(object sender, SKPaintSurfaceEventArgs e)
         {
-            DrawChart(e.Surface.Canvas, e.Info.Width, e.Info.Height);
+            var scale = CanvasSize.Width / Width;
+            var kscale = scale / Scale;
+            DrawChart(e.Surface.Canvas, e.Info.Width, e.Info.Height, kscale);
         }
 
         #endregion
 
         #region Methods
-        private void DrawChart(SKCanvas canvas, int width, int height)
+        private void DrawChart(SKCanvas canvas, int width, int height, double kscale)
         {
             if (DataSource != default(IEnumerable<object>))
             {
@@ -92,13 +94,13 @@ namespace SkiaSharpTest.Controls
                     float xValue, yValue; 
                     float.TryParse(properties.ElementAt(0).GetValue(val, null).ToString(), out xValue);
                     float.TryParse(properties.ElementAt(1).GetValue(val, null).ToString(), out yValue);
-                    Series.DataEntries.Add(new DataEntry(xValue, yValue));
+                    Series.DataEntries.Add(new DataEntry(xValue, yValue,SKColors.Green));
                 }
                 Series.FooterLabel = Label;
             }
             if (this.Series != null)
             {
-                this.Series.Draw(canvas, width, height);
+                this.Series.Draw(canvas, width, height, kscale);
             }
         }
 
