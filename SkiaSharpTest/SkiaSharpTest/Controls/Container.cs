@@ -9,14 +9,47 @@ namespace SkiaSharpTest.Controls
     public class Container
     {
         #region Properties
-        public float MarginTopBottomOuter  => 25 * (float)KScale;
-        public float PaddingBottomOuter =>  20 * (float)KScale;
-        public float MarginLeftRightOuter => Device.Idiom == TargetIdiom.Tablet ? 10 * (float)KScale : 15 * (float)KScale;
-        public SKColor BackgroundColorOuter => SKColors.LightGray;
-        public SKColor BackgroundColorInner => SKColors.White;
+
+        #region MarginHeader
+        private float _marginHeader; 
+        public float MarginHeader
+        {
+            set { _marginHeader = value; }
+            get { return _marginHeader * (float)KScale;}
+            //=> 25 * (float)KScale;
+        }
+        #endregion
+
+        #region LabelTextSize
+        private float _labelTextSize;
+        public float LabelTextSize
+        {
+            set { _labelTextSize = value; }
+            get { return _labelTextSize * (float)KScale; }
+            //=> 24.0f * (float)KScale;
+        }
+        #endregion
+
+        #region PaddingInner
+        private float _paddingInner;
+        public float PaddingInner
+        {
+            set { _paddingInner = value; }
+            get { return _paddingInner * (float)KScale; }
+            //=> 20 * (float)KScale;
+        }
+        #endregion
+
+        #region MarginInner
+        private float _marginInner;
+        public float MarginInner
+        {
+            set { _marginInner = value; }
+            get { return _marginInner * (float)KScale; }
+            //=> Device.Idiom == TargetIdiom.Tablet ? 10 * (float)KScale : 15 * (float)KScale;
+        }
+        #endregion
         public SKColor TextColor => SKColors.Black;
-        public string HeaderLabel => "APPLE";
-        public float HeaderLabelTextSize => 24.0f * (float)KScale;
         public int InnerWidth { get; set; } 
         public int InnerHeight { get; set; } 
         public int OuterWidth { get; set; }
@@ -35,8 +68,8 @@ namespace SkiaSharpTest.Controls
         {
             OuterWidth = width;
             HeaderHeight = CalculateHeaderHeight(label);
-            InnerWidth = width - (int)(2 * MarginLeftRightOuter);
-            InnerHeight = height - (int)(HeaderHeight + PaddingBottomOuter);
+            InnerWidth = width - (int)(2 * MarginInner);
+            InnerHeight = height - (int)(HeaderHeight + PaddingInner);
             this.DrawOuterGrid(canvas, width, height, color);
             this.DrawLabel(canvas, label);
             this.DrawInnerGrid(canvas);
@@ -44,10 +77,10 @@ namespace SkiaSharpTest.Controls
 
         private float CalculateHeaderHeight(string label)
         {
-            var result = this.MarginTopBottomOuter;
+            var result = this.MarginHeader;
             if (!string.IsNullOrEmpty(label))
             {
-                result += this.HeaderLabelTextSize + this.MarginTopBottomOuter;
+                result += this.LabelTextSize + this.MarginHeader;
             }
 
             return result;
@@ -58,7 +91,7 @@ namespace SkiaSharpTest.Controls
             using (var paint = new SKPaint
             {
                 Style = SKPaintStyle.Fill,
-                Color = color
+                Color = SKColors.LightGray //color
             })
             {
                 var rect = SKRect.Create(0, 0, width, height);
@@ -71,10 +104,10 @@ namespace SkiaSharpTest.Controls
             using (var paint = new SKPaint
             {
                 Style = SKPaintStyle.Fill,
-                Color = BackgroundColorInner
+                Color = SKColors.White
             })
             {
-                var rect = SKRect.Create(MarginLeftRightOuter, HeaderHeight, InnerWidth, InnerHeight);
+                var rect = SKRect.Create(MarginInner, HeaderHeight, InnerWidth, InnerHeight);
                 canvas.DrawRect(rect, paint);
             }
         }
@@ -85,7 +118,7 @@ namespace SkiaSharpTest.Controls
             {
                 using (var paint = new SKPaint())
                 {
-                    paint.TextSize = this.HeaderLabelTextSize;
+                    paint.TextSize = this.LabelTextSize;
                     paint.IsAntialias = true;
                     paint.Color = TextColor;
                     paint.IsStroke = false;
@@ -96,7 +129,7 @@ namespace SkiaSharpTest.Controls
                     var text = label;
                     paint.MeasureText(text, ref bounds);
 
-                    canvas.DrawText(text, (this.OuterWidth - bounds.Width) / 2, this.HeaderHeight / 2 + this.HeaderLabelTextSize / 2, paint);
+                    canvas.DrawText(text, (this.OuterWidth - bounds.Width) / 2, this.HeaderHeight / 2 + this.LabelTextSize / 2, paint);
                 }
             }
         }

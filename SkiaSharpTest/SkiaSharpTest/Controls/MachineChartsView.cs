@@ -22,14 +22,102 @@ namespace SkiaSharpTest.Controls
         #region .CTOR
         public MachineChartsView()
         {
+            Container = new Container();
             this.PaintSurface += OnPaintCanvas;
         }
         #endregion
 
         #region Bindable Properties
 
-        public float Scale => Xamarin.Forms.Device.Idiom == TargetIdiom.Tablet ? (float)2 : (float)3;
+        public new float Scale => Xamarin.Forms.Device.Idiom == TargetIdiom.Tablet ? (float)2 : (float)3;
 
+        #region HeaderTextSize
+        public float HeaderTextSize
+        {
+            get { return (float)GetValue(HeaderTextSizeProperty); }
+            set { SetValue(HeaderTextSizeProperty, value); }
+        }
+
+        public static readonly BindableProperty HeaderTextSizeProperty = BindableProperty.Create(
+            nameof(HeaderTextSize), typeof(float), typeof(MachineChartsView), default(float), propertyChanged: OnHeaderTextSizeChanged);
+
+        private static void OnHeaderTextSizeChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            var chartView = bindable as MachineChartsView;
+            if (chartView != null && chartView.Container != null && (float)oldValue != (float)newValue)
+            {
+                chartView.Container.LabelTextSize = (float)newValue;
+                //((MachineChartsView)bindable).InvalidateSurface();
+            }
+        }
+        #endregion
+
+        #region HeaderMargin
+
+        public float HeaderMargin
+        {
+            get { return (float)GetValue(HeaderMarginProperty); }
+            set { SetValue(HeaderMarginProperty, value); }
+        }
+
+        public static readonly BindableProperty HeaderMarginProperty = BindableProperty.Create(
+            nameof(HeaderMargin), typeof(float), typeof(MachineChartsView), default(float), propertyChanged: OnHeaderMarginChanged);
+
+        private static void OnHeaderMarginChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            var chartView = bindable as MachineChartsView;
+            if (chartView != null && chartView.Container != null && (float)oldValue != (float)newValue)
+            {
+                chartView.Container.MarginHeader = (float)newValue;
+                //((MachineChartsView)bindable).InvalidateSurface();
+            }
+        }
+        #endregion
+
+        #region InnerPadding
+        public float InnerPadding
+        {
+            get { return (float)GetValue(InnerPaddingProperty); }
+            set { SetValue(InnerPaddingProperty, value); }
+        }
+
+        public static readonly BindableProperty InnerPaddingProperty = BindableProperty.Create(
+            nameof(InnerPadding), typeof(float), typeof(MachineChartsView), default(float), propertyChanging: OnInnerPaddingChanged);
+
+        private static void OnInnerPaddingChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            var chartView = bindable as MachineChartsView;
+            if (chartView != null && chartView.Container != null && (float)oldValue != (float)newValue)
+            {
+                chartView.Container.PaddingInner = (float)newValue;
+                //((MachineChartsView)bindable).InvalidateSurface();
+            }
+        }
+        #endregion
+
+        #region InnerMargin
+        public float InnerMargin
+        {
+            get { return (float)GetValue(InnerMarginProperty); }
+            set { SetValue(InnerMarginProperty, value); }
+        }
+
+        public static readonly BindableProperty InnerMarginProperty = BindableProperty.Create(
+            nameof(InnerMargin), typeof(float), typeof(MachineChartsView), default(float), propertyChanged: OnInnerMarginChanged);
+
+        private static void OnInnerMarginChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            var chartView = bindable as MachineChartsView;
+            if (chartView != null && chartView.Container != null && (float)oldValue != (float)newValue)
+            {
+                chartView.Container.MarginInner = (float)newValue;
+                //((MachineChartsView)bindable).InvalidateSurface();
+            }
+        }
+
+        #endregion
+
+        #region DataSource
         public Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string> DataSource
         {
             get { return (Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string>)GetValue(DataSourceProperty); }
@@ -43,16 +131,23 @@ namespace SkiaSharpTest.Controls
         {
             ((MachineChartsView)bindable).InvalidateSurface();
         }
+        #endregion
 
-        public Container Container
-        {
-            get { return (Container)GetValue(ContainerProperty); }
-            set { SetValue(ContainerProperty, value); }
-        }
+        #region Container
+        public Container Container { get; set; }
 
-        public static readonly BindableProperty ContainerProperty = BindableProperty.Create(
-            nameof(Container), typeof(Container), typeof(MachineChartsView), new Container());
+        //public Container Container
+        //{
+        //    get { return (Container)GetValue(ContainerProperty); }
+        //    set { SetValue(ContainerProperty, value); }
+        //}
 
+        //public static readonly BindableProperty ContainerProperty = BindableProperty.Create(
+        //    nameof(Container), typeof(Container), typeof(MachineChartsView), new Container());
+
+        #endregion
+
+        #region Sections
         public List<Series> Sections
         {
             get { return (List<Series>)GetValue(SectionsProperty); }
@@ -65,7 +160,9 @@ namespace SkiaSharpTest.Controls
         private static void OnSeriesChanged(BindableObject bindable, object oldValue, object newValue)
         {
         }
+        #endregion
 
+        #region SeriesOrientation
         public SeriesOrientation SeriesOrientation
         {
             get { return (SeriesOrientation)GetValue(SeriesOrientationProperty); }
@@ -74,7 +171,7 @@ namespace SkiaSharpTest.Controls
 
         public static readonly BindableProperty SeriesOrientationProperty = BindableProperty.Create(
             nameof(SeriesOrientation), typeof(SeriesOrientation), typeof(MachineChartsView), SeriesOrientation.Vertical);
-
+        #endregion
 
         #endregion
 
@@ -84,6 +181,8 @@ namespace SkiaSharpTest.Controls
             e.Surface.Canvas.Clear();
             var scale = CanvasSize.Width / Width;
             var kscale = scale / Scale;
+
+
             DrawChart(e.Surface.Canvas, e.Info.Width, e.Info.Height, kscale);
         }
 
@@ -149,7 +248,7 @@ namespace SkiaSharpTest.Controls
                 {
                     SKColor color = MatchStateStatusToColor(state, status);
                     Container.Draw(sKCanvas, width, height, kscale, color, id);
-                    xOffset = Container.MarginLeftRightOuter;
+                    xOffset = Container.MarginInner;
                     yOffset = Container.HeaderHeight;
 
                     if (SeriesOrientation == SeriesOrientation.Vertical)

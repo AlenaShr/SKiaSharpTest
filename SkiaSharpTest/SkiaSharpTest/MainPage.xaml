@@ -22,6 +22,10 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <controls:MachineChartsView
+                HeaderTextSize="24"
+                HeaderMargin="25"
+                InnerPadding="20"
+                InnerMargin="{OnIdiom Tablet=10,Phone=15}"
                 DataSource="{Binding MachineChart}"
                 Grid.Column="0"
                 Grid.Row="0"/>
