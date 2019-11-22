@@ -7,55 +7,16 @@
              xmlns:controls="clr-namespace:SkiaSharpTest.Controls"
              mc:Ignorable="d"
              x:Class="SkiaSharpTest.MainPage">
-
     <StackLayout>
-        <Grid
-            Padding="10"
-            RowSpacing="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="{StaticResource ChartWidth}"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition 
-                    Height="{OnIdiom Phone={StaticResource ContainerHeightPhone}, Tablet={StaticResource ContainerHeight}}"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <controls:MachineChartsView
-                HeaderTextSize="24"
-                HeaderMargin="25"
-                InnerPadding="20"
-                InnerMargin="{OnIdiom Tablet=10,Phone=15}"
-                DataSource="{Binding MachineChart}"
-                Grid.Column="0"
-                Grid.Row="0"/>
-        </Grid>
-        <!--<Grid
-            RowSpacing="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="{StaticResource ChartWidth}"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="{OnIdiom Phone={StaticResource ChartHeightPhone}, Tablet={StaticResource ChartHeight}}"/>
-                <RowDefinition Height="{OnIdiom Phone={StaticResource ChartHeightPhone}, Tablet={StaticResource ChartHeight}}"/>
-                <RowDefinition Height="{OnIdiom Phone={StaticResource ChartHeightPhone}, Tablet={StaticResource ChartHeight}}"/>
-            </Grid.RowDefinitions>
-            <controls:ChartView 
-                Grid.Column="0"
-                Grid.Row="0"
-                DataSource="{Binding CashDispenser}"
-                Label="CASH DIS."/>
-            <controls:ChartView 
-                Grid.Column="0"
-                Grid.Row="1" 
-                DataSource="{Binding CoinHopper}"
-                Label="COINS DIS."/>
-            <controls:ChartView 
-                Grid.Column="0"
-                Grid.Row="2"
-                DataSource="{Binding BillAcceptor}"
-                Label="BILL VAL."/>
-        </Grid>-->
+        <controls:MachineStateSkiaLayout
+            DataSource="{Binding MachineChart}"
+            WidthContent="{StaticResource ChartWidth}"
+            HeightContent="{OnIdiom Phone={StaticResource ContainerHeightPhone}, Tablet={StaticResource ContainerHeight}}"/>
+        <controls:MachineInfoSkiaLayout
+            DataSource="{Binding MachineInfo}"
+            WidthContent="*"
+            HeightContent="{OnIdiom Phone=100, Tablet=140}"/>
+
+
     </StackLayout>
 </ContentPage>

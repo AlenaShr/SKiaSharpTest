@@ -12,6 +12,7 @@ namespace SkiaSharpTest
         public MainPageViewModel()
         {
             this.MachineChart = GetChart();
+            this.MachineInfo = GetInfo();
             //this.CashDispenser = GetChartData()[0];
             //this.CoinHopper = GetChartData()[1];
             //this.BillAcceptor = GetChartData()[2];
@@ -67,6 +68,17 @@ namespace SkiaSharpTest
             }
         }
 
+        private Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string> _machineInfo;
+        public Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string> MachineInfo
+        {
+            get { return _machineInfo; }
+            set
+            {
+                _machineInfo = value;
+                OnPropertyChanged(nameof(MachineInfo));
+            }
+        }
+
         #endregion
 
         #region Methods
@@ -111,6 +123,46 @@ namespace SkiaSharpTest
                 "APPLE");
         }
 
+        private Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string> GetInfo()
+        {
+            return new Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string>(
+                new List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>
+            {
+                new Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>
+                (
+                    new List<Tuple<float, float, Func<float, float, Color>>>
+                    {
+                        new Tuple<float, float, Func<float, float,Color>>(0, 2250, CashCoinColorFunc),
+                        new Tuple<float, float, Func<float, float,Color>>(1940, 2250, CashCoinColorFunc),
+                        new Tuple<float, float, Func<float, float,Color>>(1980, 2250, CashCoinColorFunc),
+                        new Tuple<float, float, Func<float, float,Color>>(1905, 2250, CashCoinColorFunc),
+                        new Tuple<float, float, Func<float, float,Color>>(1999, 2250, CashCoinColorFunc),
+                    },
+                    "CASH DIS."
+                ),
+                new Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>
+                (
+                    new List<Tuple<float, float, Func<float, float, Color>>>
+                    {
+                        new Tuple<float, float, Func<float, float,Color>>(2, 2250, CashCoinColorFunc),
+                        new Tuple<float, float, Func<float, float,Color>>(1800, 2250, CashCoinColorFunc),
+                        new Tuple<float, float, Func<float, float,Color>>(1979, 2250, CashCoinColorFunc),
+                    },
+                    "COINS DIS."
+                ),
+                new Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>
+                (
+                    new List<Tuple<float, float, Func<float, float, Color>>>
+                    {
+                        new Tuple<float, float, Func<float, float,Color>>(2, 990, BillColorFunc),
+                    },
+                    "BILL VAL."
+                )
+            },
+                KioskState.Offline,
+                KioskStatus.Normal,
+                string.Empty);
+        }
 
 
 

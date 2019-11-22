@@ -15,4 +15,19 @@
   <ItemGroup>
     <ProjectReference Include="..\..\CHBackOffice.ApiServices\CHBackOffice.ApiServices.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Controls\MachineStateSkiaLayout.xaml.cs">
+      <DependentUpon>MachineStateSkiaLayout.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Controls\MachineInfoSkiaLayout.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Controls\MachineStateSkiaLayout.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

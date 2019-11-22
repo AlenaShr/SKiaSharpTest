@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:SkiaSharpTest.Controls"
+             mc:Ignorable="d"
+             x:Name="root"
+             x:Class="SkiaSharpTest.Controls.MachineStateSkiaLayout">
+    <Grid
+            Padding="10"
+            RowSpacing="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition 
+                Width="{Binding Path=WidthContent,Source={x:Reference root}}"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition
+                Height="{Binding Path=HeightContent,Source={x:Reference root}}"/>
+        </Grid.RowDefinitions>
+        <controls:MachineChartsView
+                x:Name="machineCharts"
+                DataSource="{Binding Path=DataSource,Source={x:Reference root}}"
+                Grid.Column="0"
+                Grid.Row="0"/>
+    </Grid>
+    <!--<Grid
+            RowSpacing="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource ChartWidth}"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="{OnIdiom Phone={StaticResource ChartHeightPhone}, Tablet={StaticResource ChartHeight}}"/>
+                <RowDefinition Height="{OnIdiom Phone={StaticResource ChartHeightPhone}, Tablet={StaticResource ChartHeight}}"/>
+                <RowDefinition Height="{OnIdiom Phone={StaticResource ChartHeightPhone}, Tablet={StaticResource ChartHeight}}"/>
+            </Grid.RowDefinitions>
+            <controls:ChartView 
+                Grid.Column="0"
+                Grid.Row="0"
+                DataSource="{Binding CashDispenser}"
+                Label="CASH DIS."/>
+            <controls:ChartView 
+                Grid.Column="0"
+                Grid.Row="1" 
+                DataSource="{Binding CoinHopper}"
+                Label="COINS DIS."/>
+            <controls:ChartView 
+                Grid.Column="0"
+                Grid.Row="2"
+                DataSource="{Binding BillAcceptor}"
+                Label="BILL VAL."/>
+        </Grid>-->
+</ContentView>

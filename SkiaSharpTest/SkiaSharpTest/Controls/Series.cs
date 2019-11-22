@@ -11,6 +11,74 @@ namespace SkiaSharpTest.Controls
     {
         #region Properties
 
+        #region MarginInner
+        private float _marginInner;
+        public float MarginRightInner
+        {
+            set { _marginInner = value; }
+            get { return _marginInner * (float)KScale; }
+            //=> 10 * (float)KScale;
+        }
+        #endregion
+
+        #region MarginLeftRightInner
+        private float _marginLeftRightInner;
+        public float MarginLeftInner
+        {
+            set { _marginLeftRightInner = value; }
+            get { return _marginLeftRightInner * (float)KScale; }
+        }
+        #endregion
+
+        #region MarginTopInner
+        private float _marginTopInner;
+        public float MarginTopInner
+        {
+            set { _marginTopInner = value; }
+            get { return _marginTopInner * (float)KScale; }
+        }
+        #endregion
+
+        #region MarginBottomInner
+        private float _marginBottomInner;
+        public float MarginBottomInner
+        {
+            set { _marginBottomInner = value; }
+            get { return _marginBottomInner * (float)KScale; }
+        }
+        #endregion
+
+        #region MarginFooter
+        private float _marginFooter;
+        public float MarginFooter
+        {
+            set { _marginFooter = value; }
+            get { return _marginFooter * (float)KScale; }
+            //=> 5 * (float)KScale;
+        }
+        #endregion
+
+        #region LabelTextSize
+        private float _labelTextSize;
+        public float LabelTextSize
+        {
+            set { _labelTextSize = value; }
+            get { return _labelTextSize * (float)KScale; }
+            //=> 20.0f *(float)KScale;
+        }
+        #endregion
+
+        #region WidthItem
+        private float _widthItem;
+        public float WidthItem
+        {
+            set { _widthItem = value; }
+            get { return _widthItem * (float)KScale; }
+            //=> Device.Idiom == TargetIdiom.Tablet ? 20 * (float)KScale : 18 * (float)KScale;
+        }
+        #endregion
+
+        #region MinValue
         private float? _minValue;
         public float MinValue
         {
@@ -31,7 +99,9 @@ namespace SkiaSharpTest.Controls
 
             set => this._minValue = value;
         }
+        #endregion
 
+        #region MaxValue
         private float? _maxValue;
         public float MaxValue
         {
@@ -52,17 +122,14 @@ namespace SkiaSharpTest.Controls
 
             set => this._maxValue = value;
         }
+        #endregion
+
         private float ValueRange => this.MaxValue - this.MinValue;
-        public float MarginInner => 10 * (float)KScale;
-        public float MarginLabel => 5 * (float)KScale;
-        public float FooterLabelTextSize => 20.0f *(float)KScale;
-        public float WidthItem => Device.Idiom == TargetIdiom.Tablet ? 20 * (float)KScale : 18 * (float)KScale;
         public string FooterLabel { get; set; }
         public SKColor CriticalColor { get; set; } = SKColors.Red;
         public SKColor ChartAreaColor { get; set; } = SKColors.LightGray;
         public SKColor TextColor => SKColors.Black;
         public DataEntryCollection DataEntries { get; set; }
-        
         public double KScale { get; set; } = 1;
         #endregion
 
@@ -102,16 +169,16 @@ namespace SkiaSharpTest.Controls
 
         private float CalculateHeaderHeight()
         {
-            var result = this.MarginInner;
+            var result = this.MarginTopInner;
             return result;
         }
 
         private float CalculateFooterHeight()
         {
-            var result = this.MarginInner;
+            var result = this.MarginBottomInner;
             if (!string.IsNullOrEmpty(FooterLabel))
             {
-                result += this.FooterLabelTextSize + this.MarginLabel;
+                result += this.LabelTextSize + this.MarginFooter;
             }
 
             return result;
@@ -121,7 +188,7 @@ namespace SkiaSharpTest.Controls
         {
             var total = this.DataEntries.Count();
             var w = WidthItem; //(width - ((total + 1) * this.Margin)) / total;
-            var h = height - this.MarginInner - footerHeight - headerHeight;
+            var h = height - this.MarginTopInner - footerHeight - headerHeight;
             return new SKSize(w, h);
         }
 
@@ -138,7 +205,7 @@ namespace SkiaSharpTest.Controls
             {
                 var entry = this.DataEntries.ElementAt(i);
 
-                var x = this.MarginInner + (itemSize.Width / 2) + (i * (itemSize.Width + this.MarginInner));
+                var x = this.MarginLeftInner + (itemSize.Width / 2) + (i * (itemSize.Width + this.MarginRightInner));
                 var percent = ((this.MaxValue - entry.Value) / this.ValueRange);
 
                 ///Because if count == 0  we can not display setted color indicator
@@ -202,7 +269,7 @@ namespace SkiaSharpTest.Controls
                             if (height < MinBarHeight)
                             {
                                 height = MinBarHeight;
-                                if (y + height > this.MarginInner + itemSize.Height)
+                                if (y + height > this.MarginTopInner + itemSize.Height)
                                 {
                                     y = headerHeight + itemSize.Height - height;
                                 }
@@ -213,7 +280,7 @@ namespace SkiaSharpTest.Controls
                             if (DataEntries[i].Color == CriticalColor)
                             {
                                 height = Math.Max(origin, point.Y) - headerHeight;
-                                if (y + height > this.MarginInner + itemSize.Height)
+                                if (y + height > this.MarginTopInner + itemSize.Height)
                                 {
                                     y = headerHeight + itemSize.Height - height;
                                 }
@@ -242,7 +309,7 @@ namespace SkiaSharpTest.Controls
             {
                 using (var paint = new SKPaint())
                 {
-                    paint.TextSize = this.FooterLabelTextSize;
+                    paint.TextSize = this.LabelTextSize;
                     paint.IsAntialias = true;
                     paint.Color = TextColor;
                     paint.IsStroke = false;
@@ -254,7 +321,7 @@ namespace SkiaSharpTest.Controls
                     paint.MeasureText(text, ref bounds);
 
                     
-                    canvas.DrawText(text, this.MarginInner + xOffset, height - (this.MarginInner + (this.FooterLabelTextSize / 2)) + this.MarginLabel + yOffset, paint);
+                    canvas.DrawText(text, this.MarginLeftInner + xOffset, height - (this.MarginBottomInner + (this.LabelTextSize / 2)) + this.MarginFooter + yOffset, paint);
                 }
             }
         }

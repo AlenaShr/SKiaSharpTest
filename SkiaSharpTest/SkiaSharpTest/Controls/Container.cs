@@ -31,11 +31,11 @@ namespace SkiaSharpTest.Controls
         #endregion
 
         #region PaddingInner
-        private float _paddingInner;
-        public float PaddingInner
+        private float _paddingOuter;
+        public float PaddingOuter
         {
-            set { _paddingInner = value; }
-            get { return _paddingInner * (float)KScale; }
+            set { _paddingOuter = value; }
+            get { return _paddingOuter * (float)KScale; }
             //=> 20 * (float)KScale;
         }
         #endregion
@@ -69,7 +69,7 @@ namespace SkiaSharpTest.Controls
             OuterWidth = width;
             HeaderHeight = CalculateHeaderHeight(label);
             InnerWidth = width - (int)(2 * MarginInner);
-            InnerHeight = height - (int)(HeaderHeight + PaddingInner);
+            InnerHeight = height - (int)(HeaderHeight + PaddingOuter);
             this.DrawOuterGrid(canvas, width, height, color);
             this.DrawLabel(canvas, label);
             this.DrawInnerGrid(canvas);
