@@ -8,8 +8,8 @@
              x:Name="root"
              x:Class="SkiaSharpTest.Controls.MachineInfoSkiaLayout">
     <Grid
-            Padding="10"
-            RowSpacing="0">
+        Padding="10"
+        RowSpacing="0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition 
                 Width="{Binding Path=WidthContent,Source={x:Reference root}}"/>

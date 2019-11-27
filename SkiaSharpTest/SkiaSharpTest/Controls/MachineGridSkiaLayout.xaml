@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView 
+    xmlns="http://xamarin.com/schemas/2014/forms" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="clr-namespace:SkiaSharpTest.Controls"
+    x:Name="root"
+    mc:Ignorable="d"
+    x:Class="SkiaSharpTest.Controls.MachineGridSkiaLayout">
+    <Grid
+        RowSpacing="0"
+        ColumnSpacing="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{OnIdiom Tablet=112,Phone=72}"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <controls:MachineChartView
+            x:Name="machineChart"
+            DataSource="{Binding Path=DataSource,Source={x:Reference root}}"
+            Grid.Column="0"
+            Grid.Row="0"/>
+    </Grid>
+</ContentView>

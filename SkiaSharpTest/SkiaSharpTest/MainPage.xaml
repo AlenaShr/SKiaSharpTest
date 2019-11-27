@@ -9,14 +9,17 @@
              x:Class="SkiaSharpTest.MainPage">
     <StackLayout>
         <controls:MachineStateSkiaLayout
-            DataSource="{Binding MachineChart}"
+            DataSource="{Binding MachineStatus}"
             WidthContent="{StaticResource ChartWidth}"
             HeightContent="{OnIdiom Phone={StaticResource ContainerHeightPhone}, Tablet={StaticResource ContainerHeight}}"/>
         <controls:MachineInfoSkiaLayout
             DataSource="{Binding MachineInfo}"
             WidthContent="*"
             HeightContent="{OnIdiom Phone=100, Tablet=140}"/>
-
-
+        <controls:MachineGridSkiaLayout
+            Padding="10"
+            DataSource="{Binding MachineChart}"
+            WidthRequest="{OnIdiom Tablet=112,Phone=72}"
+            HeightRequest="15"/>
     </StackLayout>
 </ContentPage>

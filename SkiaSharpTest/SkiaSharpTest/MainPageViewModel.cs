@@ -11,8 +11,9 @@ namespace SkiaSharpTest
     {
         public MainPageViewModel()
         {
-            this.MachineChart = GetChart();
+            this.MachineStatus = GetStatus();
             this.MachineInfo = GetInfo();
+            this.MachineChart = GetChart();
             //this.CashDispenser = GetChartData()[0];
             //this.CoinHopper = GetChartData()[1];
             //this.BillAcceptor = GetChartData()[2];
@@ -57,14 +58,14 @@ namespace SkiaSharpTest
         }
         #endregion
 
-        private Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string> _machineChart;
-        public Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string> MachineChart
+        private Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string> _machineStatus;
+        public Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string> MachineStatus
         {
-            get { return _machineChart; }
+            get { return _machineStatus; }
             set 
             {
-                _machineChart = value;
-                OnPropertyChanged(nameof(MachineChart));
+                _machineStatus = value;
+                OnPropertyChanged(nameof(MachineStatus));
             }
         }
 
@@ -79,10 +80,21 @@ namespace SkiaSharpTest
             }
         }
 
+        private Tuple<float, float, Func<float, float, Color>> _machineChart;
+        public Tuple<float, float, Func<float, float, Color>> MachineChart
+        {
+            get { return _machineChart; }
+            set 
+            {
+                _machineChart = value;
+                OnPropertyChanged(nameof(MachineChart));
+            }
+        }
+
         #endregion
 
         #region Methods
-        private Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string> GetChart()
+        private Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string> GetStatus()
         {
             return new Tuple<List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>, KioskState, KioskStatus, string>(
                 new List<Tuple<List<Tuple<float, float, Func<float, float, Color>>>, string>>
@@ -164,6 +176,10 @@ namespace SkiaSharpTest
                 string.Empty);
         }
 
+        private Tuple<float, float, Func<float, float, Color>> GetChart()
+        {
+            return new Tuple<float, float, Func<float, float, Color>>(1200, 2250, ChartColorFunc);
+        }
 
 
         private List<List<Tuple<float, float>>> GetChartData()
@@ -229,6 +245,8 @@ namespace SkiaSharpTest
             }
             return Color.LightGray;
         };
+
+        private Func<float, float, Color> ChartColorFunc = (count, capacity) => { return Color.FromHex("#65a77b"); };
 
         #endregion
 
